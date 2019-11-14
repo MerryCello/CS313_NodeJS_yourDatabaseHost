@@ -2,7 +2,7 @@ const express = require('express');
 var gameEngine = require('./gameEngine');
 var app = express();
 
-app.set('port', 5000)
+app.set('port', process.env.PORT|| 5000)
    .use(express.static(__dirname + '/public'))
    .set('views', __dirname + '/views')
    .set('view engine', 'ejs')
