@@ -11,7 +11,7 @@ const sLetters = (weight) => {
     
         return table.get(Math.ceil(weight));
     } else {
-        return 'Weight is too eavy for a letter!';
+        return 0;
     }
 }
 
@@ -28,7 +28,7 @@ const mLetters = (weight) => {
     
         return table.get(Math.ceil(weight));
     } else {
-        return 'Weight is too eavy for a letter!';
+        return 0;
     }
 }
 
@@ -44,7 +44,7 @@ const lgEnvelopes = (weight) => {
     
         return table.get(Math.ceil(weight));
     } else {
-        return 'Weight is too eavy for an envelope!';
+        return 0;
     }
 }
 
@@ -66,7 +66,7 @@ const fClassPkg = (weight) => {
     
         return table.get(Math.ceil(weight));
     } else {
-        return 'Weight is too eavy for a package!';
+        return 0;
     }
 }
 
@@ -91,6 +91,10 @@ const calcRates = (req, res) => {
             rate = 0;
             break;
     }
+    // if(!rate) {
+    //     res.sendFile('form.html', { root: __dirname + "/public" });
+    //     return;
+    // }
 
     let price = (Math.round(weight * rate * 100)/100).toFixed(2);
     rate = rate.toFixed(2);
