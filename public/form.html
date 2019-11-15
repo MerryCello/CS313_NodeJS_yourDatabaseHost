@@ -2,18 +2,20 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>Postal Rate Calculator</title>
     </head>
     <body>
-        <form class="" action="/game" method="post">
-            Enter your name: <input type="text" name="username" value=""><br>
-            <select class="" name="player_choice">
-                <option value="rock">Rock</option>
-                <option value="paper">Paper</option>
-                <option value="scissors">Scissors</option>
-                <input type="submit" name="submit" value="PLAY">
+        <h1>Postal Rate Calculator</h1>
+        <p>Enter the mail type and weight:</p>
+        <form action="/results" method="get">
+            <select required name="mailType">
+                <option value="Letters (Stamped)">Letters (Stamped)</option>
+                <option value="Letters (Metered)">Letters (Metered)</option>
+                <option value="Large Envelopes (Flats)">Large Envelopes (Flats)</option>
+                <option value="First-Class Package Service—Retail">First-Class Package Service—Retail</option>
             </select>
-
+            <input required type="text" name="weight" size="2" autofocus><label> (oz.)</label><br>
+            <input type="submit" name="submit" value="Calculate">
         </form>
     </body>
 </html>
