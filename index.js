@@ -1,8 +1,6 @@
 const express = require('express');
 const calcRates = require('./calcRates');
 const queries = require('./queries');
-require('dotenv').config();
-const connectionString = process.env.DATABASE_URL;
 var app = express();
 
 app.set('port', process.env.PORT || 5000)
