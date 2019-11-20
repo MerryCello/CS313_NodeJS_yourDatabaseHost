@@ -1,5 +1,4 @@
 const express = require('express');
-const calcRates = require('./calcRates');
 const queries = require('./queries');
 var app = express();
 
@@ -20,8 +19,8 @@ app.set('port', process.env.PORT || 5000)
         res.sendFile('styles.css', { root: __dirname + "/public/css" })
     })
 //    JS queries
-   .get('/results', calcRates.calcRates)
    .get('/getSignatures', queries.getSignatures)
+   .get('/getBundles', queries.getBundles)
 //    Start listening
    .listen(app.get('port'), function() {
        console.log('Listening on port: ' + app.get('port'));
