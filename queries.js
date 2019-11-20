@@ -6,12 +6,9 @@ const pool = new Pool({connectionString: connectionString});
 
 const path = './.env'
 fs.access(path, fs.F_OK, (err) => {
-  if (err) {
-    console.error(err);
-    console.log("here");
-    return
+  if (!err) {
+      process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
   }
-  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 })
 
 const getSignatures = (req, res) => {
