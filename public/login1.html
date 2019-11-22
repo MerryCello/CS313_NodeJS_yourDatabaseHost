@@ -7,14 +7,14 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
     $(document).ready(function(){
-        var email,pass;
+        var username,pass;
         $("#submit").click(function(){
-            email=$("#email").val();
+            username=$("#username").val();
             pass=$("#password").val();
             /*
             * Perform some validation here.
             */
-            $.post("/login",{email:email,pass:pass},function(data){
+            $.post("/login",{username:username,pass:pass},function(data){
                 if(data==='valid') {
                     window.location.href="/dashboard";
                 }
@@ -22,79 +22,34 @@
         });
     });
     </script>
-    <!-- including style here until I figure out
-         how to include it with node -->
-    <style>
-        .content {
-            background-color: brown;
-            /* background: url('img-url') no-repeat;
-            background-size: cover; */
-            height: 100%;
-            width: 100%;
-            overflow-y: auto;
-            padding: 150px 15px 20px;
-
-        }
-        .login-box {
-            max-width: 1100;
-            margin: 0 auto;
-            width: 100%;
-            height: 650px;
-            padding: 10px ;
-            border-radius: 3px;
-            position: relative;
-            background-color: white;
-        }
-        ::-webkit-scrollbar {
-            -webkit-appearance: none;
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(46,56,71,.5);
-            border-radius: 0;
-        }
-        ::-webkit-scrollbar-thumb{
-            cursor: pointer;
-            border-radius: 0px;
-            background: rgba(29,37,71,1);
-            -webkit-transition: color 0.2s ease;
-            -moz-transition: color 0.2s ease;
-            -o-transition: color 0.2s ease;
-            transition: color 0.2s ease;
-        }
-    </style>
 </head>
-<body class="content">
-    <!-- <input type="text" size="40" placeholder="Type your email" id="email" autofocus><br><br>
-    <input type="password" size="40" placeholder="Type your password" id="password"><br><br>
-    <input type="button" value="Submit" id="submit"> -->
+<body>
 <!-- login slide start -->
-    <div class="login-box">
-        <div class="row no-gutters height-100-percentage">
-            <div class="col-md-4 col-sm-12 style5-left">
+    <div class="ml-5 mt-5">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
                 <div class="d-flex height-100-percentage padding-30px">
                     <div class="align-self-center width-100-percentage">
-                        <h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <a class="btn btn-primary btn-lg" href="#" role="button">Learn More</a>
+                        <h2>Your Database Host</h2>
+                        <p>This is a place to store your database and edit it through an intuitive UI.</p>
+                        <a class="btn btn-primary btn-lg" href="" role="button">Learn More</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8 col-sm-12 style5-right">
+            <div class="col-md-4 col-sm-12">
                 <div class="login-form-slider">
                     <!-- login slide start -->
                     <div class="login-slide slide">
                         <div class="d-flex height-100-percentage max-width-400 margin-0-auto padding-10px">
                             <div class="align-self-center width-100-percentage">
-                                <h2>Sign in to You Login </h2>
+                                <h2>Sign in to your account</h2>
                                 <div class="floating-form" autocomplete="off">
                                     <div class="form-group">
-                                        <input type="text" size="30" id="email" autofocus class="form-control">
+                                        <input type="text" size="30" name="username" id="username" autofocus class="form-control">
                                         <label class="label">User name</label>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" size="30" id="password" class="form-control">
+                                        <input type="password" name="password" size="30" id="password" class="form-control">
                                         <label class="label">Password</label>
                                     </div>
                                     <div class="form-group">
@@ -109,6 +64,7 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 col-sm-12"></div>
         </div>
     </div>
 <!-- login slide end -->
