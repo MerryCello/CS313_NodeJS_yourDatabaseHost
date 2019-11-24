@@ -1,0 +1,17 @@
+<tr>
+    <td><%= name %></td>
+    <td><a href="mailto:<%= email %>"><%= email %></a></td>
+    <th scope="row">
+        <input id="id<%= i %>" type="hidden" name="id" value="<%= id %>">
+        <input id="submit<%= i %>" id="remove" type="button" class="btn btn-danger" value="-">
+    </th>
+</tr>
+<script>
+    $('#submit<%= i %>').click(function() {
+        let id = $('#id<%= i %>').val();
+        $.post('/q/removeSignature', {id: id}, function(result) {
+            // alert("result:"+JSON.stringify(result));
+            $('#content').html(result);
+        });
+    });
+</script>

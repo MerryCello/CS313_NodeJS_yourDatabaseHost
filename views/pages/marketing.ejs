@@ -1,0 +1,51 @@
+<table class="table">
+    <thread>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">
+                <button onclick="window.location.href='mailto:?cc=<%= emails %>'" class="btn btn-outline-dark"><b>Email All</b></button>
+            </th>
+        </tr>
+    </thread>
+    <tbody>
+        <%- rows %>
+        <tr>
+            <td>
+                <input id="name" type="text" name="name" placeholder="name">
+            </td>
+            <td>
+                <input id="email" type="text" name="email" placeholder="example@email.com">
+            </td>
+            <th scope="row">
+                <input id="addSubmit" type="button" value="+" class="btn btn-success">
+                <button id="add" class="btn btn-success">ADD &#10132;</button>
+            </th>
+        </tr> 
+    </tbody>
+</table>
+<script>
+    $('#name').hide();
+    $('#email').hide();
+    $('#addSubmit').hide();
+    $('#add').click(function(){
+        $('#name').show();
+        $('#email').show();
+        $('#add').hide();
+        $('#addSubmit').show();
+        $('#addSubmit').click(function(){
+            let name = $('#name').val();
+            let email = $('#email').val();
+            $.post('/q/addSignature', {name: name, email: email}, function(result) {
+                $('#content').html(result);
+            });
+        });
+    });
+    // $('#addSubmit').click(function(){
+    //     let name = $('#name').val();
+    //     let email = $('#email').val();
+    //     $.post('/q/addSignature', {name: name, email: email}, function(result) {
+    //         $('#content').html(result);
+    //     });
+    // });
+</script>

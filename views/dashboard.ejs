@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="icon" href="<%= icon_url %>">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" type="text/css" href="css/styles.css"> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#tab1').click(function(){
+                    $('#content').load('<%= tab1 %>');
+                });
+                $('#tab2').click(function(){
+                    $('#content').load('<%= tab2 %>');
+                });
+                $('#tab3').click(function(){
+                    $('#content').load('<%= tab3 %>');
+                });
+                $('#tab4').click(function(){
+                    $('#content').load('<%= tab4 %>');
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="">
+            <!-- header -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <!-- <div class="navbar-brand"> -->
+                    <!-- <img src="<%= icon_url %>" alt="databse icon"> -->
+                <!-- </div> -->
+                <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button> -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                        <a class="nav-link" id="tab1">HOME <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab2">MARKETING</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab3">BUNDLES</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab4">RENTALS</a>
+                        </li>
+                        <li class="nav-item">
+                            <button onclick="window.location.href='<%= logout %>'" type="button" class="btn btn-outline-secondary">LOGOUT</button>
+                        </li>
+                        <!-- <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+            <!-- content -->
+            <div class="pl-3" id="content">
+                <%- page %>
+            </div>
+        </div>
+    </body>
+</html>
