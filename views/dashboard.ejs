@@ -2,24 +2,46 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Dashboard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Dashboard</title>
         <link rel="icon" href="<%= icon_url %>">
+        <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/components/navbar/"> -->
+        <!-- <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <!-- <link rel="stylesheet" type="text/css" href="css/styles.css"> -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script>
+            function deselectALL() {
+                for(let i = 1; i<=4;++i) {
+                    let id = "#tab"+i;
+                    if ($(id).hasClass('active')) {
+                        $(id).removeClass('active');
+                    }
+                }
+            }
             $(document).ready(function(){
                 $('#tab1').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
                     $('#content').load('<%= tab1 %>');
                 });
                 $('#tab2').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
                     $('#content').load('<%= tab2 %>');
                 });
                 $('#tab3').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
                     $('#content').load('<%= tab3 %>');
                 });
                 $('#tab4').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
                     $('#content').load('<%= tab4 %>');
                 });
             });
@@ -29,25 +51,26 @@
         <div class="">
             <!-- header -->
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <!-- <div class="navbar-brand"> -->
-                    <!-- <img src="<%= icon_url %>" alt="databse icon"> -->
-                <!-- </div> -->
-                <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <img class="navbar-icon" width="2%" height="auto" src="<%= icon_url %>" alt="databse icon">
+                <div class="navbar-brand" style="cursor: pointer;">
+                    <h4>&nbsp;<a href="<%= about %>">Your Databse Host</a></h4>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button> -->
+                </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                        <a class="nav-link" id="tab1">HOME <span class="sr-only">(current)</span></a>
+                    <ul class="navbar-nav mr-auto" style="cursor: pointer;">
+                        <li id="tab1" class="nav-item active">
+                            <a class="nav-link">HOME <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab2">MARKETING</a>
+                        <li id="tab2" class="nav-item">
+                            <a class="nav-link">BUNDLES</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab3">BUNDLES</a>
+                        <li id="tab3" class="nav-item">
+                            <a class="nav-link">RENTALS</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="tab4">RENTALS</a>
+                        <li id="tab4" class="nav-item">
+                            <a class="nav-link">MARKETING</a>
                         </li>
                         <li class="nav-item">
                             <button onclick="window.location.href='<%= logout %>'" type="button" class="btn btn-outline-secondary">LOGOUT</button>

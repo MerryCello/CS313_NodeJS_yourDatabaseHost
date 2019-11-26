@@ -1,23 +1,32 @@
-<h1>Welcome to your Dashboard, <%= name %></h1>
+<h2>Welcome to your Dashboard, <%= name %></h2>
 <h4>Here is a summary:</h4>
-<table class="table">
-    <thread>
-        <tr>
-            <th scope="col"></th>
-            <th scope="col">Bundles</th>
-            <th scope="col">Waiver Signatures</th>
-            <th scope="col">Rentals</th>
-        </tr>
-    </thread>
-    <tbody>
-        <tr>
-            <th scope="row">Total</th>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <!-- <td><%# bundlesNum %></td>
-            <td><%# signNum %></td>
-            <td><%# rentalsNum %></td> -->
-        </tr>
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <table class="table">
+            <thead>
+                <tr class="bg-primary text-white">
+                    <th class="text-center" colspan="4">Database Tables</th>
+                </tr>
+            </thead>
+            <thead>
+                <tr class="table-primary">
+                    <th scope="col"></th>
+                    <th scope="col">Bundles</th>
+                    <th scope="col">Rentals</th>
+                    <th scope="col">Waiver Signatures</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Total rows:</th>
+                    <!-- <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td> -->
+                    <td><%= bundlesNum %></td>
+                    <td><%= rentalsNum %></td>
+                    <td><%= signNum %></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

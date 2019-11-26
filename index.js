@@ -29,6 +29,9 @@ router.get('/', (req, res) => {
     }
     res.sendFile(__dirname + '/views/pages/login1.html');
 });
+router.get('/about', (req, res) => {
+    res.sendFile('about.html', { root: __dirname + "/public" });
+});
 
 // for login form to validate login information with the databse
 router.post('/login', (req, res) => {
@@ -57,44 +60,67 @@ router.get('/logout', (req, res) => {
 
 // goes to dashboard if there is a valid session
 // else goes to redirect for login
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', async (req, res) => {
     sess = req.session;
     if(sess.username) {
         // by default send to home page
+        // let page = myTools.home.getHomePage();
+        let rows = await queries.getTotalRows();
+        // let rows = {bun: 0, ren: 0, sig: 0};
         let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
-        let page = ejs.render(html, {name: sess.username});
+        let page = ejs.render(
+            html,
+            {
+                name: sess.username,
+                bundlesNum: rows.bun,
+                rentalsNum: rows.ren,
+                signNum: rows.sig
+            }
+        );
         data = {
             page: page,
             icon_url: "/media/db.jpg",
             tab1: "/dashboard/home",
-            tab2: "/dashboard/marketing",
-            tab3: "/dashboard/bundles",
-            tab4: "/dashboard/rentals",
-            logout: "/logout"
+            tab2: "/dashboard/bundles",
+            tab3: "/dashboard/rentals",
+            tab4: "/dashboard/marketing",
+            logout: "/logout",
+            about: "/about"
         }
         res.render('dashboard', data);
     } else {
         res.redirect('/');
     }
 })
-router.get('/dashboard/:tab', (req, res) => {
+router.get('/dashboard/:tab', async (req, res) => {
     sess = req.session;
     if(sess.username) {
         let page;
         switch(req.params.tab) {
             case 'home':
+                // page = myTools.home.getHomePage(sess.username);
+                let rows = queries.getTotalRows();
+                // let rows = {bun: 0, ren: 0, sig: 0};
                 let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
-                page = ejs.render(html, {name: sess.username});
+                page = ejs.render(
+                    html,
+                    {
+                        name: sess.username,
+                        bundlesNum: rows.bun,
+                        rentalsNum: rows.ren,
+                        signNum: rows.sig
+                    }
+                );
                 break;
-            case 'marketing':
-                queries.getSignatures(req, res);
-                return;
             case 'bundles':
                 page = fs.readFileSync(__dirname + '/views/pages/bundles.ejs', 'utf8');
                 break;
             case 'rentals':
                 page = fs.readFileSync(__dirname + '/views/pages/rentals.ejs', 'utf8');
                 break;
+            case 'marketing':
+                queries.getSignatures(req, res);
+                return;
             default:
                 page = myTools.errorPage;
                 break;
@@ -156,25 +182,3 @@ app.use('/', router);
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Listening on port: ${app.get('port')}`);
 });
-
-/**
- //    UI HTML/EJS pages
- app.get('/', redirect.getPage)// (req, res) => {
- //        res.sendFile('login.html', { root: __dirname + "/public" });
- //    })
- //    UI JS files
- app.get('/js/inputValidation.js', (req, res) => {
-        res.sendFile('inputValidation.js', { root: __dirname + "/public/js" })
-     })
- //    UI CSS files
- app.get('/css/styles.css', (req, res) => {
-         res.sendFile('styles.css', { root: __dirname + "/public/css" })
-     })
- //    JS queries
- app.get('/getSignatures', queries.getSignatures)
- app.get('/getBundles', queries.getBundles)
- //    Start listening
- app.listen(app.get('port'), function() {
-        console.log('Listening on port: ' + app.get('port'));
-    });
- */

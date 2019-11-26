@@ -1,5 +1,12 @@
 <table class="table">
-    <thread>
+    <thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>showing <%= rowsNum %> of <%= rowsNum %> </td>
+        </tr>
+    </thead>
+    <thead>
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
@@ -7,7 +14,7 @@
                 <button onclick="window.location.href='mailto:?cc=<%= emails %>'" class="btn btn-outline-dark"><b>Email All</b></button>
             </th>
         </tr>
-    </thread>
+    </thead>
     <tbody>
         <%- rows %>
         <tr>
@@ -29,7 +36,7 @@
     $('#email').hide();
     $('#addSubmit').hide();
     $('#add').click(function(){
-        $('#name').show();
+        $('#name').show().focus();
         $('#email').show();
         $('#add').hide();
         $('#addSubmit').show();

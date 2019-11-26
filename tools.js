@@ -1,7 +1,11 @@
 const fs = require('fs');
 const ejs = require('ejs');
+const queries = require('./queries');
 const errorPage = "<h4> Error 404:</h4><p>Could not get that</p>";
 
+/**
+ * MARKETING methods
+ */
 const getNames = (rows) => {
     let names = [];
     rows.forEach(row => {
@@ -9,7 +13,7 @@ const getNames = (rows) => {
     });
     // console.log("name: "+JSON.stringify(names));
     return names;
-}
+};
 const getEmails = (rows, format) => {
     let emails;
     switch(format) {
@@ -23,7 +27,7 @@ const getEmails = (rows, format) => {
             console.log("ERROR: In tools.js::getEmails(rows, format): \"Invalid format was past.\"");
             return false;
     }
-}
+};
 const buildTableRows = (rows) => {
     // table rows
     let trs = "";
@@ -43,7 +47,7 @@ const buildTableRows = (rows) => {
     }
     // console.log("name: "+JSON.stringify(trs));
     return trs;
-}
+};
 
 const marketing = {
     getNames: getNames,
@@ -51,7 +55,30 @@ const marketing = {
     buildTableRows: buildTableRows
 };
 
+/**
+ * HOME methods
+ */
+const getHomePage = async (username) => {
+    let rows = queries.getTotalRows();
+    // let rows = {bun: 0, ren: 0, sig: 0};
+    let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
+    return ejs.render(
+        html,
+        {
+            name: username,
+            bundlesNum: rows.bun,
+            rentalsNum: rows.ren,
+            signNum: rows.sig
+        }
+    );
+};
+
+const home = {
+    getHomePage: getHomePage
+};
+
 module.exports = {
     errorPage: errorPage,
+    home: home,
     marketing: marketing
 };
