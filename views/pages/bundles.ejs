@@ -1,1 +1,175 @@
-<p style="color: red;">bundles page</p>
+<%#
+This template takes as data:
+    rowsNum
+    rows
+%>
+<script>
+    var bundleRow = [];
+</script>
+<table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>showing <%= rowsNum %> of <%= rowsNum %> </td>
+                <td></td>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Image URL</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input id="name" type="text" name="name">
+                </td>
+                <td>
+                    <textarea id="description" name="description" cols="20" rows="1"></textarea>
+                </td>
+                <td>
+                    <span id="currency1">$</span><input id="price" type="text" name="price" size="4">
+                </td>
+                <td>
+                    <textarea name="img_url" id="img_url" cols="20" rows="1"></textarea>
+                </td>
+                <th scope="row">
+                    <input id="add" type="button" value="&#10010;" class="btn btn-success">
+                    <input id="addSubmit" type="button" value="&#10148;" class="btn btn-success">
+                    <input id="cancel" onclick="cancel();" type="button" class="btn btn-light" value="CANCEL">
+                </th>
+            </tr>
+            <%- rows %>
+        </tbody>
+    </table>
+    <script>
+        $('#name').hide();
+        $('#description').hide();
+        $('#price').hide();
+        $('#img_url').hide();
+        $('#addSubmit').hide();
+        $('#currency1').hide();
+        $('#cancel').hide();
+        $('#add').click(() => {
+            $('#name').show().focus();
+            $('#description').show();
+            $('#price').show();
+            $('#img_url').show();
+            $('#add').hide();
+            $('#addSubmit').show();
+            $('#currency1').show();
+            $('#cancel').show();
+            $('#addSubmit').click(() => {
+                let name = $('#name').val();
+                let description = $('#description').val();
+                let price = $('#price').val();
+                let img_url = $('#img_url').val();
+                $.post(
+                    '/q/addBundle',
+                    {
+                        name: name,
+                        description: description,
+                        price: price,
+                        img_url: img_url
+                    }, 
+                    (result) => {
+                    $('#content').html(result);
+                });
+            });
+        });
+        
+
+    // TODO: build "/q/removeBundle"
+    var remove = (i) => {
+        let id = $('#id'+i).val();
+        $.post('/q/removeBundle', {id: id}, (result) => {
+            // alert("result:"+JSON.stringify(result));
+            $('#content').html(result);
+        });
+    };
+
+    var edit = (i) => {
+        $('#edit'+i).hide();
+        $('#imageAnchor'+i).hide();
+        $('#remove'+i).hide();
+        $('#save'+i).show();
+        $('#cancel'+i).show();
+        $('#img_url'+i).show();
+        $('#name'+i).prop('disabled', false).focus();
+        $('#description'+i).prop('disabled', false);
+        $('#price'+i).prop('disabled', false);
+    };
+
+    var cancel = (i) => {
+        // cancel adding a new bundle
+        if (i == null) {
+            $('#name').hide().val('');
+            $('#description').hide().val('');
+            $('#price').hide().val('');
+            $('#img_url').hide().val('');
+            $('#addSubmit').hide();
+            $('#currency1').hide();
+            $('#cancel').hide();
+            $('#add').show();
+        // cancel editting bundle
+        } else {
+            $('#edit'+i).show();
+            $('#imageAnchor'+i).show();
+            $('#remove'+i).show();
+            $('#save'+i).hide();
+            $('#cancel'+i).hide();
+            $('#img_url'+i).hide().val(bundleRow[i].img_url);
+            $('#name'+i).prop('disabled', true).val(bundleRow[i].name);
+            $('#description'+i).prop('disabled', true).val(bundleRow[i].description);
+            $('#price'+i).prop('disabled', true).val((Math.round(bundleRow[i].price * 100)/100).toFixed(2));
+        }
+    };
+
+    var save = (i) => {
+        let id = $('#id'+i).val();
+        let name = $('#name'+i).val();
+        let description = $('#description'+i).val();
+        let price = $('#price'+i).val();
+        let img_url = $('#img_url'+i).val();
+        $.post(
+            '/q/updateBundle',
+            {
+                id: id,
+                name: name,
+                description: description,
+                price: price,
+                img_url: img_url
+            },
+            (res) => {
+                cancel(i);
+                // alert(res);
+                $('#id'+i).val(res.id);
+                $('#name'+i).val(res.name);
+                $('#description'+i).val(res.description);
+                $('#price'+i).val((Math.round(res.price * 100)/100).toFixed(2));
+                let textarea = "";
+                let a = "";
+                if(res.img_url != null && res.img_url != "") {
+                    textarea = "<textarea name=\"img_url\" id=\"img_url"+i+"\" cols=\"20\" rows=\"1\" onClick=\"this.select();\">"+res.img_url+"</textarea>";
+                    a = "<a id=\"imageAnchor"+i+"\" href=\""+res.img_url+"\" target=\"_blank\" rel=\"noopener noreferrer\">image&nbsp;<sup><i class=\"fas fa-external-link-alt fa-xs\"></i></sup></a>";
+                } else {
+                    textarea = "<textarea name=\"img_url\" id=\"img_url"+i+"\" cols=\"20\" rows=\"1\" onClick=\"this.select();\"></textarea>";
+                    a = "<span id=\"imageAnchor"+i+"\">no url provided</span>";
+                }
+                $('#img'+i).html(textarea + a);
+                $('#img_url'+i).hide();
+                bundleRow[i].id = res.id;
+                bundleRow[i].name = res.name;
+                bundleRow[i].description = res.description;
+                bundleRow[i].price = res.price;
+                bundleRow[i].img_url = res.img_url;
+            }
+        );
+    };
+    </script>

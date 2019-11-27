@@ -36,6 +36,7 @@ router.get('/about', (req, res) => {
 // for login form to validate login information with the databse
 router.post('/login', (req, res) => {
     sess = req.session;
+    let username = req.body.username;
     /**
      * validate via the DB here
      * i.e.:
@@ -44,7 +45,7 @@ router.post('/login', (req, res) => {
      *    res.end('valid')
      * }
      */
-    sess.username = req.body.username;
+    sess.username = username;
     res.end('valid');
 });
 
@@ -91,7 +92,8 @@ router.get('/dashboard', async (req, res) => {
     } else {
         res.redirect('/');
     }
-})
+});
+
 router.get('/dashboard/:tab', async (req, res) => {
     sess = req.session;
     if(sess.username) {
@@ -99,7 +101,7 @@ router.get('/dashboard/:tab', async (req, res) => {
         switch(req.params.tab) {
             case 'home':
                 // page = myTools.home.getHomePage(sess.username);
-                let rows = queries.getTotalRows();
+                let rows = await queries.getTotalRows();
                 // let rows = {bun: 0, ren: 0, sig: 0};
                 let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
                 page = ejs.render(
@@ -113,8 +115,9 @@ router.get('/dashboard/:tab', async (req, res) => {
                 );
                 break;
             case 'bundles':
-                page = fs.readFileSync(__dirname + '/views/pages/bundles.ejs', 'utf8');
-                break;
+                queries.getBundles(req, res);
+                // page = fs.readFileSync(__dirname + '/views/pages/bundles.ejs', 'utf8');
+                return;
             case 'rentals':
                 page = fs.readFileSync(__dirname + '/views/pages/rentals.ejs', 'utf8');
                 break;
@@ -142,7 +145,56 @@ router.get('/css/styles.css', (req, res) => {
     res.sendFile('inputValidation.js', { root: __dirname + "/public/js" })
  })
 
-//    DB Queries
+/**
+ *      DB Queries
+ */ 
+
+//bundles
+router.post('/q/addBundle', (req, res) => {
+    sess = req.session;
+    if(sess.username) {
+        let body = req.body;
+        if(body.name
+           && body.description
+           && body.price) {
+            queries.addBundle(req, res);
+        } else {
+            queries.getBundles(req, res);
+        }
+    } else {
+        res.redirect('/');
+    }
+});
+router.post('/q/removeBundle', (req, res) => {
+    sess = req.session;
+    if(sess.username) {
+        if(req.body.id) {
+            queries.removeBundle(req, res);
+        } else {
+            queries.getBundles(req, res);
+        }
+    } else {
+        res.redirect('/');
+    }
+});
+router.post('/q/updateBundle', (req, res) => {
+    sess = req.session;
+    if(sess.username) {
+        let body = req.body;
+        if(    body.id
+            && body.name
+            && body.description
+            && body.price) {
+            queries.updateBundle(req, res);
+        } else {
+            queries.getBundles(req, res);
+        }
+    } else {
+        res.redirect('/');
+    }
+});
+
+// waiver
 router.post('/q/removeSignature', (req, res) => {
     sess = req.session;
     if(sess.username) {

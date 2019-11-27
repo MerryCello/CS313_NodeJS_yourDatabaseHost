@@ -16,7 +16,6 @@
         </tr>
     </thead>
     <tbody>
-        <%- rows %>
         <tr>
             <td>
                 <input id="name" type="text" name="name" placeholder="name">
@@ -25,10 +24,11 @@
                 <input id="email" type="text" name="email" placeholder="example@email.com">
             </td>
             <th scope="row">
-                <input id="addSubmit" type="button" value="+" class="btn btn-success">
-                <button id="add" class="btn btn-success">ADD &#10132;</button>
+                <input id="addSubmit" type="button" value="&#10148;" class="btn btn-success">
+                <button id="add" class="btn btn-success">&#10010;</button>
             </th>
-        </tr> 
+        </tr>
+        <%- rows %>
     </tbody>
 </table>
 <script>

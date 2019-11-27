@@ -9,43 +9,6 @@
         <!-- <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <!-- <link rel="stylesheet" type="text/css" href="css/styles.css"> -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script>
-            function deselectALL() {
-                for(let i = 1; i<=4;++i) {
-                    let id = "#tab"+i;
-                    if ($(id).hasClass('active')) {
-                        $(id).removeClass('active');
-                    }
-                }
-            }
-            $(document).ready(function(){
-                $('#tab1').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab1 %>');
-                });
-                $('#tab2').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab2 %>');
-                });
-                $('#tab3').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab3 %>');
-                });
-                $('#tab4').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab4 %>');
-                });
-            });
-        </script>
     </head>
     <body>
         <div class="">
@@ -94,5 +57,45 @@
                 <%- page %>
             </div>
         </div>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script defer="" src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+        <script>
+            function deselectALL() {
+                for(let i = 1; i<=4;++i) {
+                    let id = "#tab"+i;
+                    if ($(id).hasClass('active')) {
+                        $(id).removeClass('active');
+                    }
+                }
+            }
+            $(document).ready(function(){
+                $('#tab1').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
+                    $('#content').load('<%= tab1 %>');
+                });
+                $('#tab2').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
+                    $('#content').load('<%= tab2 %>');
+                });
+                $('#tab3').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
+                    $('#content').load('<%= tab3 %>');
+                });
+                $('#tab4').click(function(){
+                    deselectALL();
+                    $(this).addClass('active');
+                    $('#content').html('<p>loading...</p>');
+                    $('#content').load('<%= tab4 %>');
+                });
+            });
+        </script>
     </body>
 </html>

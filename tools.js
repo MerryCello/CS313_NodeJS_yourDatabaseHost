@@ -77,8 +77,55 @@ const home = {
     getHomePage: getHomePage
 };
 
+/**
+ * BUNDLES methods
+ */
+const buildBundleTableRows = (rows) => {
+    // table rows
+    let trs = "";
+    let row = fs.readFileSync(__dirname + '/views/pages/bundle_row.ejs', 'utf8');
+    let IDs = [];
+    let names = [];
+    let descriptions = [];
+    let prices = [];
+    let img_url = [];
+
+    rows.forEach(row => {
+        IDs.push(row.id);
+        names.push(row.name);
+        descriptions.push(row.description);
+        prices.push((Math.round(row.price * 100)/100).toFixed(2));
+        img_url.push(row.img_url);
+    });
+
+    try {
+        for(let i = 0; i<rows.length; ++i) {
+            trs += ejs.render(
+                row,
+                {
+                    i: i,
+                    id: IDs[i],
+                    name: names[i],
+                    description: descriptions[i],
+                    price: prices[i],
+                    img_url: img_url[i]
+                }
+            );
+        }
+    } catch (e) {
+        console.log('Cannot build bundle TRs: '+e.message);
+    }
+    // console.log("name: "+JSON.stringify(trs));
+    return trs;
+};
+
+const bundles = {
+    buildBundleTableRows: buildBundleTableRows
+};
+
 module.exports = {
     errorPage: errorPage,
     home: home,
+    bundles: bundles,
     marketing: marketing
 };
