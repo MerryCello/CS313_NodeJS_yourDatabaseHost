@@ -1,13 +1,13 @@
-const express = require('express');
-const session = require('express-session');
+const express    = require('express');
+const session    = require('express-session');
 const bodyParser = require('body-parser');
-const queries = require('./queries');
-const myTools = require('./tools');
-const path = require('path');
-const ejs = require('ejs');
-const fs = require('fs');
+const queries    = require('./queries');
+const myTools    = require('./tools');
+const path       = require('path');
+const ejs        = require('ejs');
+const fs         = require('fs');
 const router = express.Router();
-const app = express();
+const app    = express();
 
 // Bad practice to use global variable for session storage.
 // This will have to do for now.
@@ -33,20 +33,20 @@ router.get('/about', (req, res) => {
     res.sendFile('about.html', { root: __dirname + "/public" });
 });
 
-// for login form to validate login information with the databse
-router.post('/login', (req, res) => {
+// for login by validating against databse
+router.post('/login', async (req, res) => {
     sess = req.session;
     let username = req.body.username;
+    let password = req.body.password;
     /**
-     * validate via the DB here
-     * i.e.:
-     * if(queries.isValidLogin(username, password)) {
-     *    set session.username
-     *    res.end('valid')
-     * }
+     * validate against DB
      */
-    sess.username = username;
-    res.end('valid');
+    if(await queries.login.isValidLogin(username, password)) {
+        sess.username = username;
+        res.end('valid');
+    } else {
+        res.end('invalid');
+    }
 });
 
 // url to logout. To be used as href
@@ -59,6 +59,24 @@ router.get('/logout', (req, res) => {
     });
 });
 
+// add new user: validates username/creates new user
+router.post('/addNewUser', async (req, res) => {
+    let isUniqueUsername = (req.body.username) ? await queries.signup.isUniqueUsername(req.body.username) : false;
+    let isUniqueEmail    = (req.body.email)    ? await queries.signup.isUniqueEmail(req.body.email)       : false;
+
+    if(isUniqueUsername && isUniqueEmail && req.body.password) {
+        // TODO: build addNewUser()
+        queries.signup.addNewUser(req.body, res);
+    } else if (isUniqueUsername || isUniqueEmail) {
+        // console.log("here, here"); // TODO: fix this bug!!!
+        res.send({isUnique: true});
+        res.end();
+    } else {
+        res.send({isUnique: false});
+        res.end();
+    }
+});
+
 // goes to dashboard if there is a valid session
 // else goes to redirect for login
 router.get('/dashboard', async (req, res) => {
@@ -66,7 +84,7 @@ router.get('/dashboard', async (req, res) => {
     if(sess.username) {
         // by default send to home page
         // let page = myTools.home.getHomePage();
-        let rows = await queries.getTotalRows();
+        let rows = await queries.home.getTotalRows();
         // let rows = {bun: 0, ren: 0, sig: 0};
         let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
         let page = ejs.render(
@@ -101,7 +119,7 @@ router.get('/dashboard/:tab', async (req, res) => {
         switch(req.params.tab) {
             case 'home':
                 // page = myTools.home.getHomePage(sess.username);
-                let rows = await queries.getTotalRows();
+                let rows = await queries.home.getTotalRows();
                 // let rows = {bun: 0, ren: 0, sig: 0};
                 let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
                 page = ejs.render(
@@ -115,14 +133,14 @@ router.get('/dashboard/:tab', async (req, res) => {
                 );
                 break;
             case 'bundles':
-                queries.getBundles(req, res);
+                queries.bundles.getBundles(req, res);
                 // page = fs.readFileSync(__dirname + '/views/pages/bundles.ejs', 'utf8');
                 return;
             case 'rentals':
                 page = fs.readFileSync(__dirname + '/views/pages/rentals.ejs', 'utf8');
                 break;
             case 'marketing':
-                queries.getSignatures(req, res);
+                queries.marketing.getSignatures(req, res);
                 return;
             default:
                 page = myTools.errorPage;
@@ -150,6 +168,14 @@ router.get('/css/styles.css', (req, res) => {
  */ 
 
 //bundles
+router.get('/getBundles', (req, res) => {
+    sess = req.session;
+    if(sess.username) {
+        queries.bundles.getBundles(req, res);
+    } else {
+        res.redirect('/');
+    }
+});
 router.post('/q/addBundle', (req, res) => {
     sess = req.session;
     if(sess.username) {
@@ -157,9 +183,9 @@ router.post('/q/addBundle', (req, res) => {
         if(body.name
            && body.description
            && body.price) {
-            queries.addBundle(req, res);
+            queries.bundles.addBundle(req, res);
         } else {
-            queries.getBundles(req, res);
+            queries.bundles.getBundles(req, res);
         }
     } else {
         res.redirect('/');
@@ -169,9 +195,9 @@ router.post('/q/removeBundle', (req, res) => {
     sess = req.session;
     if(sess.username) {
         if(req.body.id) {
-            queries.removeBundle(req, res);
+            queries.bundles.removeBundle(req, res);
         } else {
-            queries.getBundles(req, res);
+            queries.bundles.getBundles(req, res);
         }
     } else {
         res.redirect('/');
@@ -185,9 +211,9 @@ router.post('/q/updateBundle', (req, res) => {
             && body.name
             && body.description
             && body.price) {
-            queries.updateBundle(req, res);
+            queries.bundles.updateBundle(req, res);
         } else {
-            queries.getBundles(req, res);
+            queries.bundles.getBundles(req, res);
         }
     } else {
         res.redirect('/');
@@ -199,9 +225,9 @@ router.post('/q/removeSignature', (req, res) => {
     sess = req.session;
     if(sess.username) {
         if(req.body.id) {
-            queries.removeSignature(req, res, req.body.id);
+            queries.marketing.removeSignature(req, res, req.body.id);
         } else {
-            queries.getSignatures(req, res);
+            queries.marketing.getSignatures(req, res);
         }
     } else {
         res.redirect('/');
@@ -212,18 +238,10 @@ router.post('/q/addSignature', (req, res) => {
     if(sess.username) {
         // console.log('body:' + JSON.stringify(req.body));
         if(req.body.name && req.body.email) {
-            queries.addSignature(req, res, req.body.name, req.body.email);
+            queries.marketing.addSignature(req, res, req.body.name, req.body.email);
         } else {
-            queries.getSignatures(req, res);
+            queries.marketing.getSignatures(req, res);
         }
-    } else {
-        res.redirect('/');
-    }
-});
-router.get('/getBundles', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        queries.getBundles(req, res);
     } else {
         res.redirect('/');
     }
