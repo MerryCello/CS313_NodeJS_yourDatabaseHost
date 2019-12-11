@@ -1,0 +1,59 @@
+<%#
+This template takes as data:
+    i
+    id
+    bundle_name
+    user_name
+    userEmail
+    takenDate
+%>
+<tr>
+    <td>
+        <input type="text" name="bundle" id="bundle_name<%= i %>" value="<%= bundle_name %>">
+    </td>
+    <td>
+        <a id="emailAnchor<%= i %>" href="mailto:<%= userEmail %>"><input type="text" name="user_name" id="user_name<%= i %>" cols="20" rows="1" value="<%= user_name %>"></a>
+    </td>
+    <td>
+        <!-- TODO: test with dateGroup being a class to see if it messes with all the other classes -->
+        <div class="col-auto dateGroup">
+                <div class="form-group">
+                    <div class="input-group date" id="dateTimePicker<%= i %>" data-target-input="nearest">
+                        <input type="text" name="takenDate" id="takenDate<%= i %>" class="form-control datetimepicker-input" data-target="#dateTimePicker<%= i %>" value="<%= takenDate %>"/>
+                        <div id="takenDateIcon<%= i %>" class="input-group-append" data-target="#dateTimePicker<%= i %>" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </td>
+    <th scope="row">
+        <input id="id<%= i %>" type="hidden" name="id" value="<%= id %>">
+        <!-- TODO: validate before enabling save btn (name, description, and price are NOT NULL) -->
+        <input id="remove<%= i %>" onclick="remove('<%= i %>');" type="button" class="btn btn-danger"  value="&#10008;">
+        <input id="edit<%= i %>"   onclick="edit('<%= i %>');"   type="button" class="btn btn-warning" value="EDIT">
+        <input id="save<%= i %>"   onclick="save('<%= i %>');"   type="button" class="btn btn-success" value="SAVE">
+        <input id="cancel<%= i %>" onclick="cancel('<%= i %>');" type="button" class="btn btn-light"   value="CANCEL">
+    </th>
+</tr>
+<script>
+    $('#save<%= i %>').hide();
+    $('#cancel<%= i %>').hide();
+    $('#bundle_name<%= i %>').addClass('input-disabled').prop('disabled', true);
+    $('#user_name<%= i %>').addClass('input-disabled').addClass('link').prop('disabled', true);
+    $('#takenDate<%= i %>').addClass('input-disabled').prop('disabled', true);
+    $('#takenDateIcon<%= i %>').hide();
+    rentalRows.push({id: '<%= id %>', bundle_name: '<%= bundle_name %>', user_name: '<%= user_name %>', user_email: '<%= userEmail %>' , takenDate: '<%= takenDate %>'});
+    $(() => {
+        $('#dateTimePicker<%= i %>').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm',
+            icons: {
+                time: "far fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fa fa-arrow-up",
+                down: "fa fa-arrow-down"
+            }
+        });
+    });
+</script>
+    

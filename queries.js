@@ -12,7 +12,7 @@ fs.access(path, fs.F_OK, (err) => { if (!err) { process.env["NODE_TLS_REJECT_UNA
 
 
 /**
- * HOME
+ * OVERVIEW
  */
 const getTotalRows = async () => {
     let sqlGetSig = 'select id from SSAT.waiver_signatures;';
@@ -53,62 +53,41 @@ const getTotalRows = async () => {
     }); 
     rows.ren = await promise;
 
-    // console.log('rows: '+ JSON.stringify(rows));
     return rows;
 };
 
 /**
- * MARKETING
+ * RENTALS
  */
-const getSignatures = (req, res) => {
-    let sql = "SELECT * FROM SSAT.waiver_signatures as s order by s.name;";
-
-    pool.query(sql, function(err, result) {
-        let page;
-        //  If an error occurred...
-        if (err) {
-            console.log(err);
-            page = myTools.errorPage;
-        } else {
-            rows = result.rows;
-            // console.log("rows: \""+JSON.stringify(rows)+"\"");
-            
-            let html = fs.readFileSync(__dirname + '/views/pages/marketing.ejs', 'utf8');
-            let tr = myTools.marketing.buildTableRows(rows);
-            page = ejs.render(html, {emails: myTools.marketing.getEmails(rows, "email;"), rows: tr, rowsNum: rows.length});
-            
-        }
-        res.setHeader('Content-Type', 'text/html');
-        res.send(page);
-    });
-}
-
-const removeSignature = (req, res, id) => {
-    let sql = 'delete from SSAT.waiver_signatures where id=$1;';
-
-    pool.query(sql, [id], (err, result) => {
+const search = (res, query, isDate) => {
+    let sql = "select r.id, b.name as bundle_name, r.day as taken_date, u.name as user_name, u.email as user_email from SSAT.bundle_rentals as r join SSAT.waiver_signatures as u on r.user_id = u.id join SSAT.bundle as b on r.bundle_id = b.id where u.name ILIKE $1 or b.name ILIKE $1 or u.email ILIKE $1 order by r.day;";
+    let data = ((isDate) ? ['%'] : [query+'%']);
+    let response = {
+        rows: "",
+        rowsNum: 0
+    };
+    let rows = [];
+    pool.query(sql, data, (err, result) => {
         if(err) {
             console.log(err);
         } else {
-            getSignatures(req, res);
+            if (isDate) {
+                result.rows.forEach(row => {
+                    let taken_date = myTools.dateFormatter(new Date(row.taken_date*1000), 'DD/MM/YYYY');
+                    if(taken_date == query) {
+                        rows.push(row);
+                    }
+                });
+                response.rows = myTools.rentals.buildRentalTableRows(rows);
+                response.rowsNum = rows.length;
+            } else {
+                response.rows = myTools.rentals.buildRentalTableRows(result.rows);
+                response.rowsNum = result.rowCount;
+            }
         }
+        res.end(JSON.stringify(response));
     });
-}
-
-const addSignature = (req, res, name, email) => {
-    let sql = "insert into SSAT.waiver_signatures (name, email) "+
-              "select lower($1), lower($2) where not exists ("+
-              "select name, email from SSAT.waiver_signatures "+
-              "where lower(name)=lower($1) and lower(email)=lower($2));";
-
-    pool.query(sql, [name, email], (err, result) => {
-        if(err) {
-            console.log(err);
-        } else {
-            getSignatures(req, res);
-        }
-    });
-}
+};
 
 /**
  * BUNDLES
@@ -184,6 +163,59 @@ const updateBundle = (req, res) => {
         }
     });
 };
+
+/**
+ * MARKETING
+ */
+const getSignatures = (req, res) => {
+    let sql = "SELECT * FROM SSAT.waiver_signatures as s order by s.name;";
+
+    pool.query(sql, function(err, result) {
+        let page;
+        //  If an error occurred...
+        if (err) {
+            console.log(err);
+            page = myTools.errorPage;
+        } else {
+            rows = result.rows;
+            // console.log("rows: \""+JSON.stringify(rows)+"\"");
+            
+            let html = fs.readFileSync(__dirname + '/views/pages/marketing.ejs', 'utf8');
+            let tr = myTools.marketing.buildTableRows(rows);
+            page = ejs.render(html, {emails: myTools.marketing.getEmails(rows, "email;"), rows: tr, rowsNum: rows.length});
+            
+        }
+        res.setHeader('Content-Type', 'text/html');
+        res.send(page);
+    });
+}
+
+const removeSignature = (req, res, id) => {
+    let sql = 'delete from SSAT.waiver_signatures where id=$1;';
+
+    pool.query(sql, [id], (err, result) => {
+        if(err) {
+            console.log(err);
+        } else {
+            getSignatures(req, res);
+        }
+    });
+}
+
+const addSignature = (req, res, name, email) => {
+    let sql = "insert into SSAT.waiver_signatures (name, email) "+
+              "select lower($1), lower($2) where not exists ("+
+              "select name, email from SSAT.waiver_signatures "+
+              "where lower(name)=lower($1) and lower(email)=lower($2));";
+
+    pool.query(sql, [name, email], (err, result) => {
+        if(err) {
+            console.log(err);
+        } else {
+            getSignatures(req, res);
+        }
+    });
+}
 
 /**
  * SIGN_UP
@@ -293,14 +325,8 @@ const isValidLogin = async (username, password) => {
     return isValid;
 };
 
-const home = {
+const overview = {
     getTotalRows: getTotalRows,
-};
-
-const marketing = {
-    getSignatures: getSignatures,
-    removeSignature: removeSignature,
-    addSignature: addSignature
 };
 
 const bundles = {
@@ -308,6 +334,16 @@ const bundles = {
     addBundle: addBundle,
     removeBundle: removeBundle,
     updateBundle: updateBundle
+};
+
+const rentals = {
+    search: search,
+};
+
+const marketing = {
+    getSignatures: getSignatures,
+    removeSignature: removeSignature,
+    addSignature: addSignature
 };
 
 const signup = {
@@ -321,9 +357,10 @@ const login = {
 };
 
 module.exports = {
-    home: home,
-    marketing: marketing,
+    overview: overview,
+    rentals: rentals,
     bundles: bundles,
+    marketing: marketing,
     signup: signup,
     login: login
 };

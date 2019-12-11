@@ -1,26 +1,38 @@
 const express    = require('express');
 const session    = require('express-session');
 const bodyParser = require('body-parser');
-const queries    = require('./queries');
-const myTools    = require('./tools');
 const path       = require('path');
-const ejs        = require('ejs');
-const fs         = require('fs');
-const router = express.Router();
-const app    = express();
+
+// Routers
+const bundlesRtr   = require('./routes/bundles');
+const marketingRtr = require('./routes/marketing');
+const rentalsRtr   = require('./routes/rentals');
+const userRtr      = require('./routes/user');
+const dashboardRtr = require('./routes/dashboard');
+const router       = express.Router();
+const app          = express();
 
 // Bad practice to use global variable for session storage.
 // This will have to do for now.
 var sess;
 
+// app setup
 app.set('port', process.env.PORT || 5000)
+   .set('views', path.join(__dirname, 'views'))
+   .set('view engine', 'ejs')
    .use(session({secret: 'ssshhhhh', saveUninitialized: true, resave: true}))
    .use(bodyParser.json())
    .use(bodyParser.urlencoded({extended: true}))
-   .use(express.static(path.join(__dirname, 'public')))
-   .set('views', path.join(__dirname, 'views'))
-   .set('view engine', 'ejs');
+   .use(express.static(path.join(__dirname, 'public')));
+// app router setup
+app.use('/', router)
+   .use('/', bundlesRtr)
+   .use('/', marketingRtr)
+   .use('/', rentalsRtr)
+   .use('/', userRtr)
+   .use('/', dashboardRtr);
 
+//    MAIN PAGE
 //    redirects to login if no valid session is in use
 router.get('/', (req, res) => {
     sess = req.session;
@@ -32,222 +44,6 @@ router.get('/', (req, res) => {
 router.get('/about', (req, res) => {
     res.sendFile('about.html', { root: __dirname + "/public" });
 });
-
-// for login by validating against databse
-router.post('/login', async (req, res) => {
-    sess = req.session;
-    let username = req.body.username;
-    let password = req.body.password;
-    /**
-     * validate against DB
-     */
-    if(await queries.login.isValidLogin(username, password)) {
-        sess.username = username;
-        res.end('valid');
-    } else {
-        res.end('invalid');
-    }
-});
-
-// url to logout. To be used as href
-router.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if(err) {
-            return console.log(err);
-        }
-        res.redirect('/');
-    });
-});
-
-// add new user: validates username/creates new user
-router.post('/addNewUser', async (req, res) => {
-    let isUniqueUsername = (req.body.username) ? await queries.signup.isUniqueUsername(req.body.username) : false;
-    let isUniqueEmail    = (req.body.email)    ? await queries.signup.isUniqueEmail(req.body.email)       : false;
-
-    if(isUniqueUsername && isUniqueEmail && req.body.password) {
-        // TODO: build addNewUser()
-        queries.signup.addNewUser(req.body, res);
-    } else if (isUniqueUsername || isUniqueEmail) {
-        // console.log("here, here"); // TODO: fix this bug!!!
-        res.send({isUnique: true});
-        res.end();
-    } else {
-        res.send({isUnique: false});
-        res.end();
-    }
-});
-
-// goes to dashboard if there is a valid session
-// else goes to redirect for login
-router.get('/dashboard', async (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        // by default send to home page
-        // let page = myTools.home.getHomePage();
-        let rows = await queries.home.getTotalRows();
-        // let rows = {bun: 0, ren: 0, sig: 0};
-        let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
-        let page = ejs.render(
-            html,
-            {
-                name: sess.username,
-                bundlesNum: rows.bun,
-                rentalsNum: rows.ren,
-                signNum: rows.sig
-            }
-        );
-        data = {
-            page: page,
-            icon_url: "/media/db.jpg",
-            tab1: "/dashboard/home",
-            tab2: "/dashboard/bundles",
-            tab3: "/dashboard/rentals",
-            tab4: "/dashboard/marketing",
-            logout: "/logout",
-            about: "/about"
-        }
-        res.render('dashboard', data);
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.get('/dashboard/:tab', async (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        let page;
-        switch(req.params.tab) {
-            case 'home':
-                // page = myTools.home.getHomePage(sess.username);
-                let rows = await queries.home.getTotalRows();
-                // let rows = {bun: 0, ren: 0, sig: 0};
-                let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
-                page = ejs.render(
-                    html,
-                    {
-                        name: sess.username,
-                        bundlesNum: rows.bun,
-                        rentalsNum: rows.ren,
-                        signNum: rows.sig
-                    }
-                );
-                break;
-            case 'bundles':
-                queries.bundles.getBundles(req, res);
-                // page = fs.readFileSync(__dirname + '/views/pages/bundles.ejs', 'utf8');
-                return;
-            case 'rentals':
-                page = fs.readFileSync(__dirname + '/views/pages/rentals.ejs', 'utf8');
-                break;
-            case 'marketing':
-                queries.marketing.getSignatures(req, res);
-                return;
-            default:
-                page = myTools.errorPage;
-                break;
-        }
-        res.setHeader('Content-Type', 'text/html');
-        res.send(page);
-    } else {
-        res.redirect('/');
-    }
-});
-
-//    UI CSS files
-router.get('/css/styles.css', (req, res) => {
-    res.sendFile('styles.css', { root: __dirname + "/public/css" })
-});
-
- //    UI JS files
- router.get('/js/inputValidation.js', (req, res) => {
-    res.sendFile('inputValidation.js', { root: __dirname + "/public/js" })
- })
-
-/**
- *      DB Queries
- */ 
-
-//bundles
-router.get('/getBundles', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        queries.bundles.getBundles(req, res);
-    } else {
-        res.redirect('/');
-    }
-});
-router.post('/q/addBundle', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        let body = req.body;
-        if(body.name
-           && body.description
-           && body.price) {
-            queries.bundles.addBundle(req, res);
-        } else {
-            queries.bundles.getBundles(req, res);
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-router.post('/q/removeBundle', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        if(req.body.id) {
-            queries.bundles.removeBundle(req, res);
-        } else {
-            queries.bundles.getBundles(req, res);
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-router.post('/q/updateBundle', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        let body = req.body;
-        if(    body.id
-            && body.name
-            && body.description
-            && body.price) {
-            queries.bundles.updateBundle(req, res);
-        } else {
-            queries.bundles.getBundles(req, res);
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-
-// waiver
-router.post('/q/removeSignature', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        if(req.body.id) {
-            queries.marketing.removeSignature(req, res, req.body.id);
-        } else {
-            queries.marketing.getSignatures(req, res);
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-router.post('/q/addSignature', (req, res) => {
-    sess = req.session;
-    if(sess.username) {
-        // console.log('body:' + JSON.stringify(req.body));
-        if(req.body.name && req.body.email) {
-            queries.marketing.addSignature(req, res, req.body.name, req.body.email);
-        } else {
-            queries.marketing.getSignatures(req, res);
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-
-app.use('/', router);
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Listening on port: ${app.get('port')}`);

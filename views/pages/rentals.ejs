@@ -1,1 +1,97 @@
-<p style="color: red;">rentals page</p>
+<%#
+This template takes as data:
+    searchRentalsHref
+%>
+<script>
+    var rentalRows = [];
+</script>
+
+<div class="row pt-1">
+    <div class="col-md-4 col-sm-12"></div>
+    <div class="col-md-5 col-sm-12">
+        <!-- Search form -->
+        <div class="form-row align-items-center">
+            <div id="queryGroup" class="col-auto form-group">
+                <div id="invalidSearch" class="invalid-feedback"></div>
+                <div class="input-group">
+                    <span id="searchIcon" class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </span>
+                    <input type="text" size="20" name="query" id="query" class="form-control" placeholder="search in rentals">
+                </div>
+                <span id="showDate" class="link">search by date&nbsp;&#10097;</span>
+            </div>
+
+            <div id="dateGroup" class="col-auto">
+                <div class="form-group">
+                    <div class="input-group date" id="datePicker" data-target-input="nearest">
+                        <input type="text" name="date" id="date" class="form-control datetimepicker-input" data-target="#datePicker"/>
+                        <div class="input-group-append" data-target="#datePicker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                        </div>
+                    </div>
+                    <span id="showQuery" class="link">&#10096;&nbsp;back</span>
+                </div>
+            </div>
+
+            <div class="col-auto form-group">
+                <input id="search" type="button" class="btn btn-info form-control" value="Search">
+                <label class="label">&nbsp;</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-12"></div>
+</div>
+
+<!-- Letter Search Bar -->
+<div class="container">
+  <div class="btn-toolbar row pb-1">
+    <div id="letterSearchBar1" class="btn-group btn-group-sm col-md-5 col-sm-12 pl-0 pr-0"></div>
+    <div id="letterSearchBar2" class="btn-group btn-group-sm col-md-5 col-sm-12 pl-0 pr-0"></div>
+    <div id="letterSearchBar3" class="btn-group btn-group-sm col-md-2 col-sm-12 p-0"></div>
+    </div>
+</div>
+
+<!-- Search Results -->
+<div id="searchResult">
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Bundle</th>
+                        <th scope="col">User</th>
+                        <th scope="col">day</th>
+                        <td>showing <span class="rowsNum">N/A</span> of <span class="rowsNum">N/A</span></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input id="bundle_name" type="text" name="bundle">
+                        </td>
+                        <td>
+                            <input type="text" id="user_name" name="user" cols="20" rows="1">
+                        </td>
+                        <td>
+                            <div id="newDateGroup" class="col-auto">
+                                <div class="form-group">
+                                    <div class="input-group date" id="dateTimePicker" data-target-input="nearest">
+                                        <input type="text" name="newDate" id="newDate" class="form-control datetimepicker-input" data-target="#dateTimePicker"/>
+                                        <div class="input-group-append" data-target="#dateTimePicker" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <th scope="row">
+                            <input id="add" type="button" value="&#10010;" class="btn btn-success">
+                            <input id="addSubmit" type="button" value="&#10148;" class="btn btn-success">
+                            <input id="cancel" type="button" class="btn btn-light" value="CANCEL">
+                        </th>
+                    </tr>
+                </tbody>
+                <tbody id="rows"></tbody>
+            </table>
+</div>
+
+<script src="/js/rentals.js"></script>

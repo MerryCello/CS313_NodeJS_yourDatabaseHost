@@ -49,32 +49,71 @@ const buildTableRows = (rows) => {
     return trs;
 };
 
-const marketing = {
-    getNames: getNames,
-    getEmails: getEmails,
-    buildTableRows: buildTableRows
-};
+/**
+ * OVERVIEW methods
+ */
+// const getOverviewPage = async (username) => {
+//     console.log('here');
+//     let rows = queries.getTotalRows();
+//     let html = fs.readFileSync(__dirname + '/views/pages/overview.ejs', 'utf8');
+//     return ejs.render(
+//         html,
+//         {
+//             name: username,
+//             bundlesNum: rows.bun,
+//             rentalsNum: rows.ren,
+//             signNum: rows.sig
+//         }
+//     );
+// };
 
 /**
- * HOME methods
+ * RENTAL methods
  */
-const getHomePage = async (username) => {
-    let rows = queries.getTotalRows();
-    // let rows = {bun: 0, ren: 0, sig: 0};
-    let html = fs.readFileSync(__dirname + '/views/pages/home.ejs', 'utf8');
-    return ejs.render(
-        html,
-        {
-            name: username,
-            bundlesNum: rows.bun,
-            rentalsNum: rows.ren,
-            signNum: rows.sig
-        }
-    );
+const buildRentalTableRows = (rows) => {
+    let trs = "";
+    let html = fs.readFileSync(__dirname + '/views/pages/rental-row.ejs', 'utf8');
+    let i = 0;
+    rows.forEach(row => {
+        let data = {
+            i: i,
+            id: row.id,
+            bundle_name: row.bundle_name,
+            user_name: row.user_name,
+            userEmail: row.user_email,
+            takenDate: dateFormatter(new Date(row.taken_date*1000), 'DD/MM/YYYY HH:mm')
+        };
+        trs += ejs.render(html, data);
+        i++;
+    });
+    return trs;
 };
 
-const home = {
-    getHomePage: getHomePage
+const dateFormatter = (date, pattern) => {
+    if(!(date instanceof Date)) {
+        return null;
+    }
+    
+    let HH = date.getHours();
+    let mm = date.getMinutes();
+    let DD = date.getDate();
+    let MM = date.getMonth()+1;
+    let YYYY = date.getFullYear();
+    HH = (HH < 10) ? "0"+HH : HH;
+    mm = (mm < 10) ? "0"+mm : mm;
+    DD = (DD < 10) ? "0"+DD : DD;
+    MM = (MM < 10) ? "0"+MM : MM;
+    
+    // Using a switch for now, but if this gets more sofisticated
+    // the function will reflect that
+    switch (pattern) {
+        case 'DD/MM/YYYY HH:mm':
+            return DD + "/" + MM + "/" + YYYY + " " + HH + ":" + mm;
+        case 'DD/MM/YYYY':
+            return DD + "/" + MM + "/" + YYYY;
+        default:
+            return 'N/A';
+    }
 };
 
 /**
@@ -115,8 +154,21 @@ const buildBundleTableRows = (rows) => {
     } catch (e) {
         console.log('Cannot build bundle TRs: '+e.message);
     }
-    // console.log("name: "+JSON.stringify(trs));
     return trs;
+};
+
+const marketing = {
+    getNames: getNames,
+    getEmails: getEmails,
+    buildTableRows: buildTableRows
+};
+
+// const overview = {
+//     getOverviewPage: getOverviewPage
+// };
+
+const rentals = {
+    buildRentalTableRows: buildRentalTableRows,
 };
 
 const bundles = {
@@ -124,8 +176,10 @@ const bundles = {
 };
 
 module.exports = {
-    errorPage: errorPage,
-    home: home,
+    marketing: marketing,
+    // overview: overview,
+    rentals: rentals,
     bundles: bundles,
-    marketing: marketing
+    dateFormatter: dateFormatter,
+    errorPage: errorPage
 };

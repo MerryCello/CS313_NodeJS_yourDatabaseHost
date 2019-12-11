@@ -1,101 +1,115 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>Dashboard</title>
-        <link rel="icon" href="<%= icon_url %>">
-        <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/components/navbar/"> -->
-        <!-- <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script defer="" src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="css/styles.css"> -->
-    </head>
-    <body>
-        <div class="">
-            <!-- header -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <img class="navbar-icon" width="2%" height="auto" src="<%= icon_url %>" alt="databse icon">
-                <div class="navbar-brand" style="cursor: pointer;">
-                    <h4>&nbsp;<a href="<%= about %>">Your Databse Host</a></h4>
-                </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto" style="cursor: pointer;">
-                        <li id="tab1" class="nav-item active">
-                            <a class="nav-link">HOME <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li id="tab2" class="nav-item">
-                            <a class="nav-link">BUNDLES</a>
-                        </li>
-                        <li id="tab3" class="nav-item">
-                            <a class="nav-link">RENTALS</a>
-                        </li>
-                        <li id="tab4" class="nav-item">
-                            <a class="nav-link">MARKETING</a>
-                        </li>
-                        <li class="nav-item">
-                            <button onclick="window.location.href='<%= logout %>'" type="button" class="btn btn-outline-secondary">LOGOUT</button>
-                        </li>
-                        <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                        </li> -->
-                    </ul>
-                </div>
-            </nav>
-            <!-- content -->
-            <div class="pl-3" id="content">
-                <%- page %>
-            </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title><%= title %></title>
+    <link rel="icon" href="<%= icon_url %>">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+<!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- jQuery Mark -->
+    <script src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
+<!-- Moment.js -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+<!-- Bootstrap 4 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Bootstrap Date Time Picker JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Bootstrap tempusDominus CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+<!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!-- Font Awesome -->
+    <script defer="" src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <img class="navbar-icon" width="2%" height="auto" src="<%= icon_url %>" alt="databse icon">
+        <div class="navbar-brand" style="cursor: pointer;">
+            <h4>&nbsp;<a href="<%= about %>">Your Databse Host</a></h4>
         </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" style="cursor: pointer;">
+                <li id="tab1" class="nav-item active">
+                    <a class="nav-link">OVERVIEW <span class="sr-only">(current)</span></a>
+                </li>
+                <li id="tab2" class="nav-item">
+                    <a class="nav-link">BUNDLES</a>
+                </li>
+                <li id="tab3" class="nav-item">
+                    <a class="nav-link">RENTALS</a>
+                </li>
+                <li id="tab4" class="nav-item">
+                    <a class="nav-link">MARKETING</a>
+                </li>
+                <li class="nav-item">
+                    <button onclick="window.location.href='<%= logout %>'" type="button" class="btn btn-outline-secondary">LOGOUT</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- content -->
+    <div class="pl-3" id="content"><%- page %></div>
 
-        <script>
-            function deselectALL() {
-                for(let i = 1; i<=4;++i) {
-                    let id = "#tab"+i;
-                    if ($(id).hasClass('active')) {
-                        $(id).removeClass('active');
-                    }
+    <script>
+        function deselectALL() {
+            for(let i = 1; i<=4;++i) {
+                let id = "#tab"+i;
+                if ($(id).hasClass('active')) {
+                    $(id).removeClass('active');
                 }
             }
-            $(document).ready(function(){
-                $('#tab1').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab1 %>');
-                });
-                $('#tab2').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab2 %>');
-                });
-                $('#tab3').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab3 %>');
-                });
-                $('#tab4').click(function(){
-                    deselectALL();
-                    $(this).addClass('active');
-                    $('#content').html('<p>loading...</p>');
-                    $('#content').load('<%= tab4 %>');
+        }
+        const searchByLetter = (c) => {
+            $.get('<%= searchRentalsHref %>', {query: c}, (result) => {
+                result = JSON.parse(result);
+                rentalRows = [];
+                $('.rowsNum').html(result.rowsNum);
+                $('#rows').html(result.rows);
+            });
+        };
+        $(document).ready(function(){
+            $('#tab1').click(function(){
+                deselectALL();
+                $(this).addClass('active');
+                $(document).prop('title', '<%= titleTab1 %>');
+                $('#content').html('<p>loading...</p>');
+                $('#content').load('<%= tab1 %>');
+            });
+            $('#tab2').click(function(){
+                deselectALL();
+                $(this).addClass('active');
+                $(document).prop('title', '<%= titleTab2 %>');
+                $('#content').html('<p>loading...</p>');
+                $('#content').load('<%= tab2 %>');
+            });
+            $('#tab3').click(function(){
+                deselectALL();
+                $(this).addClass('active');
+                $(document).prop('title', '<%= titleTab3 %>');
+                $('#content').html('<p>loading...</p>');
+                $('#content').load('<%= tab3 %>', () => {
+                    $('#rows').html("<p>Loading the rows...</p>");
+                    $.get('<%= searchRentalsHref %>', {query: null, date: null}, (result) => {
+                        result = JSON.parse(result);
+                        $('.rowsNum').html(result.rowsNum);
+                        $('#rows').html(result.rows);
+                    });
                 });
             });
-        </script>
-    </body>
+            $('#tab4').click(function(){
+                deselectALL();
+                $(this).addClass('active');
+                $(document).prop('title', '<%= titleTab4 %>');
+                $('#content').html('<p>loading...</p>');
+                $('#content').load('<%= tab4 %>');
+            });
+        });
+    </script>
+</body>
 </html>

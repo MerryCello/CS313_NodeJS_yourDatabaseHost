@@ -3,6 +3,7 @@
         <tr>
             <td></td>
             <td></td>
+            <!-- <td><input id="searchList" type="button" class="btn btn-info" value="search list"></td> -->
             <td>showing <%= rowsNum %> of <%= rowsNum %> </td>
         </tr>
     </thead>
@@ -48,11 +49,17 @@
             });
         });
     });
-    // $('#addSubmit').click(function(){
-    //     let name = $('#name').val();
-    //     let email = $('#email').val();
-    //     $.post('/q/addSignature', {name: name, email: email}, function(result) {
-    //         $('#content').html(result);
-    //     });
-    // });
+
+    // TODO: build search engin with Markjs.io
+    $(document).ready(() => {
+        const search = (q) => {
+            // if(q) {
+                // alert("You searched \""+q+"\" in page");
+                $('tr').mark(q);
+            // }
+        };
+        const searchInPage = () => {
+            search(prompt("Keyword(s):"));
+        }
+    });
 </script>
