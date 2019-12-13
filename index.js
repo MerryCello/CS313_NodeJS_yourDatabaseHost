@@ -1,3 +1,4 @@
+// npm native modules
 const express    = require('express');
 const session    = require('express-session');
 const bodyParser = require('body-parser');
@@ -23,16 +24,16 @@ app.set('port', process.env.PORT || 5000)
    .use(session({secret: 'ssshhhhh', saveUninitialized: true, resave: true}))
    .use(bodyParser.json())
    .use(bodyParser.urlencoded({extended: true}))
-   .use(express.static(path.join(__dirname, 'public')));
-// app router setup
-app.use('/', router)
+   .use(express.static(path.join(__dirname, 'public')))
+// routers setup
+   .use('/', router)
    .use('/', bundlesRtr)
    .use('/', marketingRtr)
    .use('/', rentalsRtr)
    .use('/', userRtr)
    .use('/', dashboardRtr);
 
-//    MAIN PAGE
+//    MAIN ROUTER PAGE
 //    redirects to login if no valid session is in use
 router.get('/', (req, res) => {
     sess = req.session;

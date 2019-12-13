@@ -11,7 +11,6 @@ const getNames = (rows) => {
     rows.forEach(row => {
         names.push(row.name.replace(/^./, row.name[0].toUpperCase()));
     });
-    // console.log("name: "+JSON.stringify(names));
     return names;
 };
 const getEmails = (rows, format) => {
@@ -45,7 +44,6 @@ const buildTableRows = (rows) => {
     for(let i = 0; i<rows.length; ++i) {
         trs += ejs.render(row, {i: i, id: IDs[i], name: names[i], email: emails[i]});
     }
-    // console.log("name: "+JSON.stringify(trs));
     return trs;
 };
 
