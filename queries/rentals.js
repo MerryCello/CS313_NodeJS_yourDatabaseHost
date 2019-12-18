@@ -10,14 +10,17 @@ const pool = new Pool({connectionString: connectionString});
  * RENTALS
  */
 const search = (res, query, isDate) => {
-    let sql = "select r.id, b.name as bundle_name, r.day as taken_date, u.name as user_name, u.email as user_email from SSAT.bundle_rentals as r join SSAT.waiver_signatures as u on r.user_id = u.id join SSAT.bundle as b on r.bundle_id = b.id where u.name ILIKE $1 or b.name ILIKE $1 or u.email ILIKE $1 order by r.day;";
-    let data = ((isDate) ? ['%'] : [query+'%']);
+    // NOTE: testing sql injection
+    let sql = "select r.id, b.name as bundle_name, r.day as taken_date, u.name as user_name, u.email as user_email from SSAT.bundle_rentals as r join SSAT.waiver_signatures as u on r.user_id = u.id join SSAT.bundle as b on r.bundle_id = b.id where u.name ILIKE '"+ query +"%' or b.name ILIKE '"+ query +"%' or u.email ILIKE '"+ query +"%' order by r.day;";
+    // let sql = "select r.id, b.name as bundle_name, r.day as taken_date, u.name as user_name, u.email as user_email from SSAT.bundle_rentals as r join SSAT.waiver_signatures as u on r.user_id = u.id join SSAT.bundle as b on r.bundle_id = b.id where u.name ILIKE $1 or b.name ILIKE $1 or u.email ILIKE $1 order by r.day;";
+    // let data = ((isDate) ? ['%'] : [query+'%']);
     let response = {
         rows: "",
         rowsNum: 0
     };
     let rows = [];
-    pool.query(sql, data, (err, result) => {
+    pool.query(sql, (err, result) => {
+    // pool.query(sql, data, (err, result) => {
         if(err) {
             console.log(err);
         } else {
